@@ -4,17 +4,20 @@
 -- User_id
 --project_name
 
-DELIMITER $$
-CREATE PROCEDURE AddBonus(IN user_id INTEGER, IN project_name VARCHAR(255), IN score INTEGER)
+CREATE PROCEDURE AddBonus (
+  IN user_id INT,
+  IN project_name VARCHAR(255),
+  IN score DECIMAL(5,2)
+)
 BEGIN
-    INSERT INTO projects(name)
-    SELECT project_name FROM DUAL
-    WHERE NOT EXISTS(SELECT * FROM projects WHERE name = project_name LIMIT 1);
+  DECLARE project_id INT;
 
-    INSERT INTO corrections(user_id, project_id, score)
-    VALUES (
-    user_id,
-    (SELECT id FROM projects WHERE name = project_name),
-    score);
-END $$
-DELIMITER;
+  SELECT id INTO project_id FROM projects WHERE name = project_name;
+
+  IF project_id IS NULL THEN
+    INSERT INTO projects (name) VALUES (project_name);
+    SET project_id = LAST_INSERT_ID();
+  END IF;
+
+  INSERT INTO corrections (user_id, project_id, score) VALUES (user_id, project_id, score);
+END;
