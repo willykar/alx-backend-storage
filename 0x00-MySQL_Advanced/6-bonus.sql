@@ -2,7 +2,7 @@
 -- Requirements:
 -- AddBonus is taking 3 inputs
 -- User_id
---project_name
+-- Project_name
 
 CREATE PROCEDURE AddBonus(IN p_user_id INT, IN p_project_name VARCHAR(255), IN p_score INT)
 BEGIN
