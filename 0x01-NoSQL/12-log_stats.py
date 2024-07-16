@@ -7,17 +7,18 @@ from pymongo import MongoClient
 
 
 def get_log_stats(nginx_collection):
-    """ A function that gets the status"""
-    print('{} logs'.format(nginx_collection.count_documents({})))
-    print('Methods:')
+    """ A function that gets the status about nginx"""
     methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+    
+    print(f'{nginx_collection.count_documents({})} logs')
+    
+    print('Methods:')
     for method in methods:
-        req_count = len(list(nginx_collection.find({'method': method})))
-        print('\tmethod {}: {}'.format(method, req_count))
-    status_checks_count = len(list(
-        nginx_collection.find({'method': 'GET', 'path': '/status'})
-    ))
-    print('{} status check'.format(status_checks_count))
+        count = nginx_collection.count_documents({'method': method})
+        print(f'\tmethod {method}: {count}')
+        
+    status = nginx_collection.count_documents({"path": "/status"})
+    print(f'{status} status check')
 
 
 def main():
