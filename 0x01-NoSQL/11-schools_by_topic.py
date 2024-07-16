@@ -8,4 +8,4 @@ def schools_by_topic(mongo_collection, topic):
     a specific topic"""
     filter_topics = mongo_collection.find(
             {"topics": topic})
-    return [document for document in filter_topics]
+    return ([document for document in filter_topics])
