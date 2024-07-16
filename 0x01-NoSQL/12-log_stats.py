@@ -7,7 +7,7 @@ from pymongo import MongoClient
 
 
 def get_log_stats(nginx_collection):
-    """ A function that gets the status"""
+    """ A function that gets the status about nginx"""
     methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
     
     print(f'{nginx_collection.count_documents({})} logs')
