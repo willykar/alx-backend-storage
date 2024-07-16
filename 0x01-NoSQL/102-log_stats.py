@@ -19,35 +19,37 @@ def get_log_stats(nginx_collection):
         
     status = nginx_collection.count_documents({"path": "/status"})
     print(f'{status} status check')
-    
-    ip_pipeline = [
-      {
-        "$group": {
-          "_id": "$ip",
-          "count": {"$sum": 1}
-        }
-      },
-      {
-        "$sort": {"count": -1}
-      },
-      {
-        "$limit": 10
-      }
-    ]
-  
-    results = nginx_collection.aggregate(ip_pipeline)
 
-    print("IPs:")
-    for res in results:
-      print(f'\t{res.get("_id")}: {res.get("count")}')
-
+def print_top_ips(server_collection):
+    """A function that prints the top 10 IPs
+    in a collection.
+    """
+    print('IPs:')
+    request_logs = server_collection.aggregate(
+        [
+            {
+                '$group': {'_id': "$ip", 'totalRequests': {'$sum': 1}}
+            },
+            {
+                '$sort': {'totalRequests': -1}
+            },
+            {
+                '$limit': 10
+            },
+        ]
+    )
+    for request_log in request_logs:
+        ip = request_log['_id']
+        ip_requests_count = request_log['totalRequests']
+        print('\t{}: {}'.format(ip, ip_requests_count))
 
 def main():
     """The main function that has the mongo client"""
     client = MongoClient('mongodb://127.0.0.1:27017')
 
     get_log_stats(client.logs.nginx)
+    print_top_ips(client.logs.nginx)
 
-
+    
 if __name__ == '__main__':
     main()
