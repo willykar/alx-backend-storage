@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """" schools_by_topics module that returns the list of school
 having a specific topic"""
 
